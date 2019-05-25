@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ResourceManagement.Data\ResourceManagement.Data.csproj" />
+    <ProjectReference Include="..\ResourceManagement.Domain\ResourceManagement.Domain.fsproj" />
+    <ProjectReference Include="..\..\Common.FSharp\Common.FSharp\Common.FSharp.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src/WidgetManagement.fs" />
+    <Compile Include="src/EventSourcing.fs" />
+    <Compile Include="src/Database.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="newtonsoft.json" Version="12.0.2" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ResourceManagement.Data\ResourceManagement.Data.csproj" />
+    <ProjectReference Include="..\ResourceManagement.Domain\ResourceManagement.Domain.fsproj" />
+    <ProjectReference Include="..\ResourceManagement.Domain.DAL\ResourceManagement.Domain.DAL.fsproj" />
+    <ProjectReference Include="..\..\Common.FSharp\Common.FSharp\Common.FSharp.fsproj" />
+    <ProjectReference Include="..\..\Common.FSharp\Common.FSharp.Actors\Common.FSharp.Actors.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src/Dtos.fs" />
+    <Compile Include="src/ProcessingSystem.fs" />
+    <Compile Include="src/RestQuery.fs" />
+    <Compile Include="src/WidgetCommands.fs" />
+    <Compile Include="src/Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Akka.FSharp" Version="1.3.12" />
+    <PackageReference Include="suave" Version="2.5.4" />
+  </ItemGroup>
+</Project>
