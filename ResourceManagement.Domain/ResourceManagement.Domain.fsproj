@@ -7,6 +7,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src/DomainTypes.fs" />
-    <Compile Include="src/WidgetManagement.fs" />
+    <Compile Include="src/ClientManagement.fs" />
+    <Compile Include="src/ScopeManagement.fs" />
+    <Compile Include="src/ResourceManagement.fs" />
   </ItemGroup>
 </Project>

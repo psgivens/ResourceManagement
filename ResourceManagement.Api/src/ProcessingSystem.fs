@@ -7,7 +7,9 @@ open Akka.FSharp
 open ResourceManagement.Domain
 open Common.FSharp.Envelopes
 open ResourceManagement.Domain.DomainTypes
-open ResourceManagement.Domain.WidgetManagement
+open ResourceManagement.Domain.ClientManagement
+// open ResourceManagement.Domain.WidgetManagement
+// open ResourceManagement.Domain.WidgetManagement
 open ResourceManagement.Domain
 open Common.FSharp.Actors
 
@@ -22,21 +24,44 @@ open Suave
 open Common.FSharp.Suave
 
 type ActorGroups = {
-    WidgetManagementActors:ActorIO<WidgetManagementCommand>
+    ClientManagementActors:ActorIO<ClientManagementCommand>
+    // WidgetManagementActors:ActorIO<WidgetManagementCommand>
+    // WidgetManagementActors:ActorIO<WidgetManagementCommand>
     }
 
 let composeActors system =
     // Create member management actors
-    let widgetManagementActors = 
+    let clientManagementActors = 
         EventSourcingActors.spawn 
             (system,
-             "widgetManagement", 
-             WidgetManagementEventStore (),
-             buildState WidgetManagement.evolve,
-             WidgetManagement.handle,
-             DAL.WidgetManagement.persist)    
+             "clientManagement", 
+             ClientManagementEventStore (),
+             buildState ClientManagement.evolve,
+             ClientManagement.handle,
+             DAL.ClientManagement.persist)    
              
-    { WidgetManagementActors=widgetManagementActors }
+    // let widgetManagementActors = 
+    //     EventSourcingActors.spawn 
+    //         (system,
+    //          "widgetManagement", 
+    //          WidgetManagementEventStore (),
+    //          buildState WidgetManagement.evolve,
+    //          WidgetManagement.handle,
+    //          DAL.WidgetManagement.persist)    
+             
+    // let widgetManagementActors = 
+    //     EventSourcingActors.spawn 
+    //         (system,
+    //          "widgetManagement", 
+    //          WidgetManagementEventStore (),
+    //          buildState WidgetManagement.evolve,
+    //          WidgetManagement.handle,
+    //          DAL.WidgetManagement.persist)    
+             
+    { ClientManagementActors=clientManagementActors 
+      // WidgetManagementActors=widgetManagementActors 
+      // WidgetManagementActors=widgetManagementActors 
+      }
 
 
 let initialize () = 
@@ -53,9 +78,16 @@ let initialize () =
     printfn "Composing the actors..."
     let actorGroups = composeActors system
 
-    let widgetCommandRequestReplyCanceled = 
-      RequestReplyActor.spawnRequestReplyActor<WidgetManagementCommand, WidgetManagementEvent> 
-        system "widget_management_command" actorGroups.WidgetManagementActors
+    let clientCommandRequestReplyCanceled = 
+      RequestReplyActor.spawnRequestReplyActor<ClientManagementCommand, ClientManagementEvent> 
+        system "widget_management_command" actorGroups.ClientManagementActors
+
+    // let widgetCommandRequestReplyCanceled = 
+    //   RequestReplyActor.spawnRequestReplyActor<WidgetManagementCommand, WidgetManagementEvent> 
+    //     system "widget_management_command" actorGroups.WidgetManagementActors
+    // let widgetCommandRequestReplyCanceled = 
+    //   RequestReplyActor.spawnRequestReplyActor<WidgetManagementCommand, WidgetManagementEvent> 
+    //     system "widget_management_command" actorGroups.WidgetManagementActors
 
     let runWaitAndIgnore = 
       Async.AwaitTask
@@ -70,13 +102,13 @@ let initialize () =
         Name="Spacely Sprocket"
         Description="Important sprocket for creating floating houses and cars."
     }
-    |> WidgetManagementCommand.Create
+    |> ClientManagementCommand.Create
     |> envelop (StreamId.create ())
-    |> widgetCommandRequestReplyCanceled.Ask
+    |> clientCommandRequestReplyCanceled.Ask
     |> runWaitAndIgnore
 
-    let widget = ResourceManagement.Domain.DAL.WidgetManagement.findWidgetByName "Spacely Sprocket"
-    printfn "Created Widget %s with userId %A" widget.Name widget.Id         
+    let client = ResourceManagement.Domain.DAL.ClientManagement.findClientByName "Spacely Sprocket"
+    printfn "Created Client %s with userId %A" client.Name client.Id         
 
     actorGroups
 

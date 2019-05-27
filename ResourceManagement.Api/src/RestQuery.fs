@@ -8,15 +8,15 @@ open Suave.Successful
 open Common.FSharp.Suave
 open ResourceManagement.Domain
 
-let getWidget userIdString =
-  DAL.WidgetManagement.findWidgetByName userIdString
-  |> convertToDto
+let getClient userIdString =
+  DAL.ClientManagement.findClientByName userIdString
+  |> convertToClientDto
   |> toJson 
   |> OK
 
-let getWidgets (ctx:HttpContext) =
-  DAL.WidgetManagement.getAllWidgets ()
-  |> List.map convertToDto
+let getClients (ctx:HttpContext) =
+  DAL.ClientManagement.getAllClients ()
+  |> List.map convertToClientDto
   |> toJson
   |> OK
 

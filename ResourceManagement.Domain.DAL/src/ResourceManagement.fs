@@ -1,26 +1,26 @@
-module ResourceManagement.Domain.DAL.WidgetManagement
+module ResourceManagement.Domain.DAL.ResourceManagement
 
 open ResourceManagement.Data.Models
 open Common.FSharp.Envelopes
 open ResourceManagement.Domain.DomainTypes
-open ResourceManagement.Domain.WidgetManagement
+open ResourceManagement.Domain.ResourceManagement
 
 let defaultDT = "1/1/1900" |> System.DateTime.Parse
-let persist (userId:UserId) (streamId:StreamId) (state:WidgetManagementState option) =
+let persist (userId:UserId) (streamId:StreamId) (state:ResourceManagementState option) =
     use context = new ActionableDbContext () 
-    let entity = context.Widgets.Find (StreamId.unbox streamId)
+    let entity = context.Resources.Find (StreamId.unbox streamId)
     match entity, state with
     | null, Option.None -> ()
     | null, Option.Some(item) -> 
         let details = item.Details
-        context.Widgets.Add (
-            Widget (
+        context.Resources.Add (
+            ResourceEntity (
                 Id = StreamId.unbox streamId,
                 Name = details.Name,
                 Description = details.Description
             )) |> ignore
         printfn "Persist mh: (%s)" details.Name
-    | _, Option.None -> context.Widgets.Remove entity |> ignore        
+    | _, Option.None -> context.Resources.Remove entity |> ignore        
     | _, Some(item) -> 
         let details = item.Details
         entity.Name <- details.Name
@@ -32,27 +32,27 @@ let execQuery (q:ActionableDbContext -> System.Linq.IQueryable<'a>) =
     q context
     |> Seq.toList
 
-let getAllWidgets () =
-    execQuery (fun ctx -> ctx.Widgets :> System.Linq.IQueryable<Widget>)
+let getAllResources () =
+    execQuery (fun ctx -> ctx.Resources :> System.Linq.IQueryable<ResourceEntity>)
 
-let getHeadWidget () =
-    let getWidget' (ctx:ActionableDbContext) = 
+let getHeadResource () =
+    let getResource' (ctx:ActionableDbContext) = 
         query { 
-            for widget in ctx.Widgets do
-            select widget
+            for resource in ctx.Resources do
+            select resource
         }
-    getWidget'
+    getResource'
     |> execQuery
     |> Seq.head
 
 
 let find (userId:UserId) (streamId:StreamId) =
     use context = new ActionableDbContext () 
-    context.Widgets.Find (StreamId.unbox streamId)
+    context.Resources.Find (StreamId.unbox streamId)
 
-let findWidgetByName name =
+let findResourceByName name =
     use context = new ActionableDbContext () 
-    query { for widget in context.Widgets do            
-            where (widget.Name = name)
-            select widget
+    query { for resource in context.Resources do            
+            where (resource.Name = name)
+            select resource
             exactlyOne }

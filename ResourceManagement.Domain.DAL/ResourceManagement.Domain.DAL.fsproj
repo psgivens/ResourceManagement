@@ -8,7 +8,9 @@
     <ProjectReference Include="..\..\Common.FSharp\Common.FSharp\Common.FSharp.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src/WidgetManagement.fs" />
+    <Compile Include="src/ClientManagement.fs" />
+    <Compile Include="src/ScopeManagement.fs" />
+    <Compile Include="src/ResourceManagement.fs" />
     <Compile Include="src/EventSourcing.fs" />
     <Compile Include="src/Database.fs" />
   </ItemGroup>

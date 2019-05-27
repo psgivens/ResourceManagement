@@ -21,8 +21,8 @@ let app =
           // All requests are handled together because CQRS
           GET >=> choose
             [ pathCi "/" >=> OK "Default route"
-              pathCi "/widgets" >=> (getWidgets |> Suave.Http.context) 
-              pathScanCi "/widgets/%s" getWidget
+              pathCi "/widgets" >=> (getClients |> Suave.Http.context) 
+              pathScanCi "/widgets/%s" getClient
             ]            
 
           // Widget commands

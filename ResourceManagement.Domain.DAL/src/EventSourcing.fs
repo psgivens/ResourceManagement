@@ -25,20 +25,74 @@ type ActionableDbContext with
                 Item = (JsonConvert.DeserializeObject<'a> event.Event)
             })
 
-open ResourceManagement.Domain.WidgetManagement
-type WidgetManagementEventStore () =
-    interface IEventStore<WidgetManagementEvent> with
+open ResourceManagement.Domain.ClientManagement
+type ClientManagementEventStore () =
+    interface IEventStore<ClientManagementEvent> with
         member this.GetEvents (streamId:StreamId) =
             use context = new  ActionableDbContext ()
             streamId
-            |> context.GetAggregateEvents (fun i -> i.WidgetEvents) 
+            |> context.GetAggregateEvents (fun i -> i.ClientEvents) 
             |> Seq.toList 
             |> List.sortBy(fun x -> x.Version)
-        member this.AppendEvent (envelope:Envelope<WidgetManagementEvent>) =
+        member this.AppendEvent (envelope:Envelope<ClientManagementEvent>) =
             try
                 use context = new ActionableDbContext ()
-                context.WidgetEvents.Add (
-                    WidgetEventEnvelopeEntity (  Id = envelope.Id,
+                context.ClientEvents.Add (
+                    ClientEventEnvelopeEntity (  Id = envelope.Id,
+                                            StreamId = StreamId.unbox envelope.StreamId,
+                                            UserId = UserId.unbox envelope.UserId,
+                                            TransactionId = TransId.unbox envelope.TransactionId,
+                                            Version = Version.unbox envelope.Version,
+                                            TimeStamp = envelope.Created,
+                                            Event = JsonConvert.SerializeObject(envelope.Item)
+                                            )) |> ignore         
+                context.SaveChanges () |> ignore
+                
+            with
+                | ex -> System.Diagnostics.Debugger.Break () 
+
+
+open ResourceManagement.Domain.ScopeManagement
+type ScopeManagementEventStore () =
+    interface IEventStore<ScopeManagementEvent> with
+        member this.GetEvents (streamId:StreamId) =
+            use context = new  ActionableDbContext ()
+            streamId
+            |> context.GetAggregateEvents (fun i -> i.ScopeEvents) 
+            |> Seq.toList 
+            |> List.sortBy(fun x -> x.Version)
+        member this.AppendEvent (envelope:Envelope<ScopeManagementEvent>) =
+            try
+                use context = new ActionableDbContext ()
+                context.ScopeEvents.Add (
+                    ScopeEventEnvelopeEntity (  Id = envelope.Id,
+                                            StreamId = StreamId.unbox envelope.StreamId,
+                                            UserId = UserId.unbox envelope.UserId,
+                                            TransactionId = TransId.unbox envelope.TransactionId,
+                                            Version = Version.unbox envelope.Version,
+                                            TimeStamp = envelope.Created,
+                                            Event = JsonConvert.SerializeObject(envelope.Item)
+                                            )) |> ignore         
+                context.SaveChanges () |> ignore
+                
+            with
+                | ex -> System.Diagnostics.Debugger.Break () 
+
+
+open ResourceManagement.Domain.ResourceManagement
+type ResourceManagementEventStore () =
+    interface IEventStore<ResourceManagementEvent> with
+        member this.GetEvents (streamId:StreamId) =
+            use context = new  ActionableDbContext ()
+            streamId
+            |> context.GetAggregateEvents (fun i -> i.ResourceEvents) 
+            |> Seq.toList 
+            |> List.sortBy(fun x -> x.Version)
+        member this.AppendEvent (envelope:Envelope<ResourceManagementEvent>) =
+            try
+                use context = new ActionableDbContext ()
+                context.ResourceEvents.Add (
+                    ResourceEventEnvelopeEntity (  Id = envelope.Id,
                                             StreamId = StreamId.unbox envelope.StreamId,
                                             UserId = UserId.unbox envelope.UserId,
                                             TransactionId = TransId.unbox envelope.TransactionId,

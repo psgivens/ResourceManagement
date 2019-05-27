@@ -26,5 +26,7 @@ namespace ResourceManagement.Data.Models
         public virtual System.DateTimeOffset TimeStamp { get; set; }
         public virtual string Event { get; set; }
     }
-    public class WidgetEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class ClientEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class ScopeEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class ResourceEventEnvelopeEntity : EnvelopeEntityBase { }
 }

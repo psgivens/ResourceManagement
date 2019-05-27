@@ -19,12 +19,18 @@ namespace ResourceManagement.Data.Models {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Entity<WidgetEventEnvelopeEntity>()
+                .Entity<ClientEventEnvelopeEntity>()
+                .HasKey(e => new { e.StreamId, e.UserId, e.Id });
+            modelBuilder
+                .Entity<ScopeEventEnvelopeEntity>()
+                .HasKey(e => new { e.StreamId, e.UserId, e.Id });
+            modelBuilder
+                .Entity<ResourceEventEnvelopeEntity>()
                 .HasKey(e => new { e.StreamId, e.UserId, e.Id });
 
-            // modelBuilder
-            //     .Entity<GroupPrincipalMap>()
-            //     .HasKey(e => new { e.GroupId, e.PrincipalId });
+            modelBuilder
+                .Entity<ClientScopeMap>()
+                .HasKey(e => new { e.ClientId, e.ScopeId });
 
             // modelBuilder
             //     .Entity<RolePrincipalMap>()
@@ -41,10 +47,11 @@ namespace ResourceManagement.Data.Models {
 
             base.OnModelCreating(modelBuilder);
         }
-
-
-        public virtual DbSet<WidgetEventEnvelopeEntity> WidgetEvents { get; set; }
-
-        public virtual DbSet<Widget> Widgets { get; set; }
+        public virtual DbSet<ClientEventEnvelopeEntity> ClientEvents { get; set; }
+        public virtual DbSet<ScopeEventEnvelopeEntity> ScopeEvents { get; set; }
+        public virtual DbSet<ResourceEventEnvelopeEntity> ResourceEvents { get; set; }
+        public virtual DbSet<ClientEntity> Clients { get; set; }
+        public virtual DbSet<ScopeEntity> Scopes { get;set; }
+        public virtual DbSet<ResourceEntity> Resources { get; set; }
     }
 }
