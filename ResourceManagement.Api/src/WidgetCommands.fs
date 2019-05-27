@@ -8,7 +8,9 @@ open Suave.Successful
 open Common.FSharp.Suave
 open Common.FSharp.Envelopes
 
-open ResourceManagement.Domain.WidgetManagement
+open ResourceManagement.Domain.ClientManagement
+open ResourceManagement.Domain.ScopeManagement
+open ResourceManagement.Domain.ResourceManagement
 open ResourceManagement.Domain
 open ResourceManagement.Data.Models
 
