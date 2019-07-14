@@ -29,4 +29,11 @@ namespace ResourceManagement.Data.Models
     public class ClientEventEnvelopeEntity : EnvelopeEntityBase { }
     public class ScopeEventEnvelopeEntity : EnvelopeEntityBase { }
     public class ResourceEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class RoleEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class PrivilegeEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class EndpointEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class DataConstraintEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class RolePrivMapEventEnvelopeEntity : EnvelopeEntityBase { }
+    public class PrivEPMapEventEnvelopeEntity : EnvelopeEntityBase { }
+
 }

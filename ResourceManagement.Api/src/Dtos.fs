@@ -31,3 +31,15 @@ let convertToResourceDto (resource:ResourceEntity) = {
   ResourceDto.id = resource.Id.ToString () 
   name = resource.Name
   description = resource.Description }
+
+type EndpointDto = { 
+    id : string
+    name : string 
+    url : string
+    method : string }
+
+let convertToDto (endpoint:Endpoint) = { 
+  EndpointDto.name = endpoint.Name
+  url = endpoint.Url
+  method = endpoint.Method
+  id = endpoint.Id.ToString () }

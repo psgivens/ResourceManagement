@@ -10,5 +10,8 @@
     <Compile Include="src/ClientManagement.fs" />
     <Compile Include="src/ScopeManagement.fs" />
     <Compile Include="src/ResourceManagement.fs" />
+    <Compile Include="src/EndpointChange.fs" />
+    <Compile Include="src/PrivilegeChange.fs" />
+    <Compile Include="src/RoleChange.fs" />
   </ItemGroup>
 </Project>

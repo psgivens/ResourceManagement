@@ -8,6 +8,7 @@ open Common.FSharp.Envelopes
 type ResourceDetails = { 
     Name:string
     Description:string
+    Secret:string
     }
 
 type ResourceManagementStateValue =

@@ -11,7 +11,7 @@ open Suave.RequestErrors
 open Common.FSharp.Suave
 
 open ResourceManagement.Api.ProcessingSystem
-open ResourceManagement.Api.WidgetCommands
+open ResourceManagement.Api.EndpointCommands
 open ResourceManagement.Api.RestQuery
 
 let app =
@@ -21,21 +21,19 @@ let app =
           // All requests are handled together because CQRS
           GET >=> choose
             [ pathCi "/" >=> OK "Default route"
-              pathCi "/widgets" >=> (getClients |> Suave.Http.context) 
-              pathScanCi "/widgets/%s" getClient
+              pathCi "/endpoints" >=> (getEndpoints |> Suave.Http.context) 
+              pathScanCi "/endpoints/%s" getEndpoint
             ]            
 
-          // Widget commands
-          POST >=> pathCi "/widgets" >=> restful postWidget
-          PUT >=> pathScanCi "/widgets/%s" (restfulPathScan putWidget)
-          DELETE >=> pathScanCi "/widgets/%s" deleteWidget
+          // Endpoint commands
+          POST >=> pathCi "/endpoints" >=> restful postEndpoint
+          PUT >=> pathScanCi "/endpoints/%s" (restfulPathScan putEndpoint)
+          DELETE >=> pathScanCi "/endpoints/%s" deleteEndpoint
 
           // Role commands
           BAD_REQUEST "Request path was not found"
         ]
-      // Suave.RequestErrors.UNAUTHORIZED "Request is missing authentication headers"    
-      BAD_REQUEST "Request is missing authentication headers"
-
+      Suave.RequestErrors.BAD_REQUEST "Request is missing authentication headers"    
     ]
 
 let defaultArgument x y = defaultArg y x
@@ -45,7 +43,7 @@ let defaultArgument x y = defaultArg y x
 let main argv =
     printfn "main argv"
 
-    let config = { defaultConfig with  bindings = [ HttpBinding.createSimple HTTP "127.0.0.1" 8080 ]}
+    let config = { defaultConfig with  bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 7080 ]}
 
     startWebServer config app
     0

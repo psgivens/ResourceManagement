@@ -20,3 +20,20 @@ let getClients (ctx:HttpContext) =
   |> toJson
   |> OK
 
+open Suave
+open Suave.Successful
+
+open Common.FSharp.Suave
+
+let getEndpoint endpointName =
+  DAL.EndpointChange.findEndpointByName endpointName
+  |> convertToDto
+  |> toJson 
+  |> OK
+
+let getEndpoints (ctx:HttpContext) =
+  DAL.EndpointChange.getAllEndpoints ()
+  |> List.map convertToDto
+  |> toJson
+  |> OK
+

@@ -19,18 +19,30 @@ open Common.FSharp.Actors.Infrastructure
 open ResourceManagement.Domain.DAL.Database
 open Akka.Dispatch.SysMsg
 open Common.FSharp
+open ResourceManagement.Domain.EndpointChange
 
 open Suave
 open Common.FSharp.Suave
 
 type ActorGroups = {
     ClientManagementActors:ActorIO<ClientManagementCommand>
+    EndpointChangeActors:ActorIO<EndpointChangeCommand>
+
     // WidgetManagementActors:ActorIO<WidgetManagementCommand>
     // WidgetManagementActors:ActorIO<WidgetManagementCommand>
     }
 
 let composeActors system =
     // Create member management actors
+    let endpointChangeActors = 
+        EventSourcingActors.spawn 
+            (system,
+             "EndpointChange", 
+             EndpointChangeEventStore (),
+             buildState EndpointChange.evolve,
+             EndpointChange.handle,
+             DAL.EndpointChange.persist)   
+
     let clientManagementActors = 
         EventSourcingActors.spawn 
             (system,
@@ -59,6 +71,7 @@ let composeActors system =
     //          DAL.WidgetManagement.persist)    
              
     { ClientManagementActors=clientManagementActors 
+      EndpointChangeActors=endpointChangeActors
       // WidgetManagementActors=widgetManagementActors 
       // WidgetManagementActors=widgetManagementActors 
       }
@@ -109,6 +122,32 @@ let initialize () =
 
     let client = ResourceManagement.Domain.DAL.ClientManagement.findClientByName "Spacely Sprocket"
     printfn "Created Client %s with userId %A" client.Name client.Id         
+
+    let endpointCommandRequestReplyCanceled = 
+      RequestReplyActor.spawnRequestReplyActor<EndpointChangeCommand, EndpointChangeEvent> 
+        system "endpoint_management_command" actorGroups.EndpointChangeActors
+
+    let runWaitAndIgnore = 
+      Async.AwaitTask
+      >> Async.Ignore
+      >> Async.RunSynchronously
+
+    let userId = UserId.create ()
+    let envelop streamId = envelopWithDefaults userId (TransId.create ()) streamId
+
+    printfn "Creating endpoint..."
+    { 
+      EndpointDetails.Url = "/sample/url"
+      EndpointDetails.Method = EndpointMethod.GET
+      EndpointDetails.Name = "sample url"
+    }
+    |> EndpointChangeCommand.Create
+    |> envelop (StreamId.create ())
+    |> endpointCommandRequestReplyCanceled.Ask
+    |> runWaitAndIgnore
+
+    let endpoint = ResourceManagement.Domain.DAL.EndpointChange.findEndpointByName "sample url"
+    printfn "Created Endpoint %s with endpointId %A" endpoint.Name endpoint.Id         
 
     actorGroups
 
